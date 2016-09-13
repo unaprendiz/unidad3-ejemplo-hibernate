@@ -9,8 +9,9 @@ public class Item {
 
 	@Id
 	private String nombre;
-	private int peso;
 	
+	private int peso;
+
 	@ManyToOne
 	private Personaje owner;
 	
@@ -25,6 +26,11 @@ public class Item {
 	public String getNombre() {
 		return this.nombre;
 	}
+
+	public void setNombre(String nombre) {
+		this.nombre = nombre;
+	}
+
 	
 	public int getPeso() {
 		return this.peso;
@@ -40,7 +46,7 @@ public class Item {
 	
 	@Override
 	public String toString() {
-		return this.nombre;
+		return this.getNombre();
 	}
 	
 }

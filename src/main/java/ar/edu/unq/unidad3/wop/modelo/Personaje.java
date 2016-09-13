@@ -8,18 +8,16 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
-import javax.persistence.Table;
 
 import ar.edu.unq.unidad3.wop.modelo.exception.MuchoPesoException;
 
 @Entity
-@Table(name="PERSONAJES")
-public class Personaje  {
-
+public class Personaje {
+	
 	@Id
 	private String nombre;
-	
-	@Column(name="hist", length=100000, nullable=false)
+
+	@Column(name="hist", length=100000)
 	private String historia;
 	
 	private int pesoMaximo;
@@ -37,9 +35,12 @@ public class Personaje  {
 	}
 	
 	public String getNombre() {
-		return this.nombre;
+		return nombre;
 	}
-
+	public void setNombre(String nombre) {
+		this.nombre = nombre;
+	}
+	
 	public void setHistoria(String historia) {
 		this.historia = historia;
 	}
@@ -92,7 +93,7 @@ public class Personaje  {
 	
 	@Override
 	public String toString() {
-		return this.nombre;
+		return this.getNombre();
 	}
 
 }
