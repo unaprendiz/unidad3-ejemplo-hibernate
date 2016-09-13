@@ -10,6 +10,12 @@ public class Runner {
 	private static final ThreadLocal<Session> CONTEXTO = new ThreadLocal<>();
 	
 	public static <T> T runInSession(Supplier<T> bloque) {
+		// permite anidar llamadas a Runner sin abrir una nueva
+		// Sessino cada vez (usa la que abrio la primera vez)
+		if (CONTEXTO.get() != null) {
+			return bloque.get();
+		}
+		
 		Session session = null;
 		Transaction tx = null;
 		
