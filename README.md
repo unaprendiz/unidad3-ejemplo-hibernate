@@ -1,2 +1,4 @@
-# unidad1-archivos
-Ejemplos relacionados con la unidad 1. Persistencia en archivos (binario, XML, JSON)
+# unidad3-archivos
+Ejemplos relacionados con la unidad 3. Persistencia usando hiberante:
+
+Ver tag primera-clase para ver hasta donde llegamos en la primera clase.
