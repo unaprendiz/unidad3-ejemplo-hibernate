@@ -1,5 +1,8 @@
 package ar.edu.unq.unidad3.wop.dao;
 
+import java.util.Collection;
+
+import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -11,6 +14,7 @@ import ar.edu.unq.unidad3.wop.modelo.Personaje;
 import ar.edu.unq.unidad3.wop.service.InventarioService;
 import ar.edu.unq.unidad3.wop.service.TestService;
 import ar.edu.unq.unidad3.wop.service.runner.Runner;
+import ar.edu.unq.unidad3.wop.service.runner.SessionFactoryProvider;
 
 public class InventarioServiceTest {
 	
@@ -25,19 +29,37 @@ public class InventarioServiceTest {
 		this.service = new InventarioService(personajeDAO, itemDAO);
 		this.testService = new TestService();
 		
+		this.testService.crearEntidad(new Item("Tunica", 100));
 		this.testService.crearEntidad(new Item("Baculo", 50));
 
 		Personaje maguin = new Personaje("Maguin");
 		maguin.setPesoMaximo(70);
+		maguin.setVida(10);
 		this.testService.crearEntidad(maguin);
+		
+		Personaje debilucho = new Personaje("Debilucho");
+		debilucho.setPesoMaximo(1000);
+		debilucho.setVida(1);
+		this.testService.crearEntidad(debilucho);
 	}
+	
+	@After
+	public void cleanup() {
+		//Destroy cierra la session factory y fuerza a que, la proxima vez, una nueva tenga
+		//que ser creada.
+		//
+		//Al tener hibernate configurado con esto <property name="hibernate.hbm2ddl.auto">create-drop</property>
+		//al crearse una nueva session factory todo el schema será destruido y creado desde cero.
+		SessionFactoryProvider.destroy();
+	}
+	
 	
 	@Test
 	public void test_recoger() {
 		this.service.recoger("Maguin", "Baculo");
 		
 		Runner.runInSession(() -> {
-			Personaje maguin = testService.recuperarEntidad(Personaje.class, "Maguin");
+			Personaje maguin = this.testService.recuperarEntidad(Personaje.class, "Maguin");
 			Assert.assertEquals("Maguin", maguin.getNombre());
 			
 			Assert.assertEquals(1, maguin.getInventario().size());
@@ -50,5 +72,64 @@ public class InventarioServiceTest {
 			return null;
 		});
 	}
+	
+	@Test
+	public void test_get_all() {
+		Runner.runInSession(() -> {
+			Collection<Item> items = this.service.getAllItems();
+			
+			Assert.assertEquals(2, items.size());
+			
+			Item baculo = new Item("Baculo", 100);
+			Assert.assertTrue(items.contains(baculo));
+			
+			return null;
+		});
+	}
+	
+	@Test
+	public void test_get_mas_pesados() {
+		Runner.runInSession(() -> {
+			Collection<Item> items = this.service.getMasPesdos(10);
+			Assert.assertEquals(2, items.size());
+			
+			Collection<Item> items2 = this.service.getMasPesdos(80);
+			Assert.assertEquals(1, items2.size());
+			
+			return null;
+		});
+	}
+	
+	@Test
+	public void test_get_items_debiles() {
+		Runner.runInSession(() -> {
+			Collection<Item> items = this.service.getItemsPersonajesDebiles(5);
+			Assert.assertEquals(0, items.size());
+			
+			return null;
+		});
+		
+		this.service.recoger("Maguin", "Baculo");
+		this.service.recoger("Debilucho", "Tunica");
+		
+		Runner.runInSession(() -> {
+			Collection<Item> items = this.service.getItemsPersonajesDebiles(5);
+			Assert.assertEquals(1, items.size());
+			Assert.assertEquals("Tunica", items.iterator().next().getNombre());
+			
+			return null;
+		});
+		
+	}
 
+	@Test
+	public void test_get_mas_pesado() {
+		Runner.runInSession(() -> {
+			Item item = this.service.getHeaviestItem();
+			Assert.assertEquals("Tunica", item.getNombre());
+			
+			return null;
+		});
+	}
+	
 }

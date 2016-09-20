@@ -1,5 +1,7 @@
 package ar.edu.unq.unidad3.wop.dao;
 
+import java.util.Collection;
+
 import ar.edu.unq.unidad3.wop.modelo.Item;
 
 /**
@@ -11,5 +13,13 @@ public interface ItemDAO {
 	void guardar(Item personaje);
 	
 	Item recuperar(String nombre);
+
+	Collection<Item> getAll();
+
+	Collection<Item> getMasPesados(int peso);
+
+	Collection<Item> getItemsDePersonajesDebiles(int unaVida);
+
+	Item getHeaviestItem();
 	
 }

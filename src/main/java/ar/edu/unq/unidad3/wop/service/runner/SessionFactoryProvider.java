@@ -6,12 +6,20 @@ import org.hibernate.cfg.Configuration;
 
 public class SessionFactoryProvider {
 	
-	private static final SessionFactoryProvider INSTANCE = new SessionFactoryProvider();
+	private static SessionFactoryProvider INSTANCE;
 
 	private SessionFactory sessionFactory;
 	
 	public static SessionFactoryProvider getInstance() {
+		if (INSTANCE == null) {
+			INSTANCE = new SessionFactoryProvider();
+		}
 		return INSTANCE;
+	}
+	
+	public static void destroy() {
+		INSTANCE.sessionFactory.close();
+		INSTANCE = null;
 	}
 	
 	private SessionFactoryProvider() {
