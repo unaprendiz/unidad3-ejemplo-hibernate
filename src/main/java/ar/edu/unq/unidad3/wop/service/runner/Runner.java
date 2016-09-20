@@ -31,7 +31,11 @@ public class Runner {
 			tx.commit();
 			return resultado;
 		} catch (RuntimeException e) {
-			tx.rollback();
+			//solamente puedo cerrar la transaccion si fue abierta antes,
+			//puede haberse roto el metodo ANTES de abrir una transaccion
+			if (tx != null && tx.isActive()) {
+				tx.rollback();
+			}
 			throw e;
 		} finally {
 			if (session != null) {

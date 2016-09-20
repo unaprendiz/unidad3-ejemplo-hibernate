@@ -18,7 +18,9 @@ public class SessionFactoryProvider {
 	}
 	
 	public static void destroy() {
-		INSTANCE.sessionFactory.close();
+		if (INSTANCE != null && INSTANCE.sessionFactory != null) {
+			INSTANCE.sessionFactory.close();
+		}
 		INSTANCE = null;
 	}
 	
