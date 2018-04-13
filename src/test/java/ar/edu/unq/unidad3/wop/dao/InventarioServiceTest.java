@@ -58,78 +58,54 @@ public class InventarioServiceTest {
 	public void test_recoger() {
 		this.service.recoger("Maguin", "Baculo");
 		
-		Runner.runInSession(() -> {
-			Personaje maguin = this.testService.recuperarEntidad(Personaje.class, "Maguin");
-			Assert.assertEquals("Maguin", maguin.getNombre());
-			
-			Assert.assertEquals(1, maguin.getInventario().size());
-			
-			Item baculo = maguin.getInventario().iterator().next();
-			Assert.assertEquals("Baculo", baculo.getNombre());
-			
-			Assert.assertSame(baculo.getOwner(), maguin);
+		Personaje maguin = this.testService.recuperarEntidad(Personaje.class, "Maguin");
+		Assert.assertEquals("Maguin", maguin.getNombre());
 
-			return null;
-		});
+		Assert.assertEquals(1, maguin.getInventario().size());
+
+		Item baculo = maguin.getInventario().iterator().next();
+		Assert.assertEquals("Baculo", baculo.getNombre());
+
+		Assert.assertSame(baculo.getOwner(), maguin);
 	}
 	
 	@Test
 	public void test_get_all() {
-		Runner.runInSession(() -> {
-			Collection<Item> items = this.service.getAllItems();
-			
-			Assert.assertEquals(2, items.size());
-			
-			Item baculo = new Item("Baculo", 100);
-			Assert.assertTrue(items.contains(baculo));
-			
-			return null;
-		});
+		Collection<Item> items = this.service.getAllItems();
+
+		Assert.assertEquals(2, items.size());
+
+		Item baculo = new Item("Baculo", 100);
+		Assert.assertTrue(items.contains(baculo));
 	}
 	
 	@Test
 	public void test_get_mas_pesados() {
-		Runner.runInSession(() -> {
-			Collection<Item> items = this.service.getMasPesdos(10);
-			Assert.assertEquals(2, items.size());
-			
-			Collection<Item> items2 = this.service.getMasPesdos(80);
-			Assert.assertEquals(1, items2.size());
-			
-			return null;
-		});
+		Collection<Item> items = this.service.getMasPesdos(10);
+		Assert.assertEquals(2, items.size());
+
+		Collection<Item> items2 = this.service.getMasPesdos(80);
+		Assert.assertEquals(1, items2.size());
 	}
 	
 	@Test
 	public void test_get_items_debiles() {
-		Runner.runInSession(() -> {
-			Collection<Item> items = this.service.getItemsPersonajesDebiles(5);
-			Assert.assertEquals(0, items.size());
-			
-			return null;
-		});
-		
+		Collection<Item> items = this.service.getItemsPersonajesDebiles(5);
+		Assert.assertEquals(0, items.size());
+
 		this.service.recoger("Maguin", "Baculo");
 		this.service.recoger("Debilucho", "Tunica");
 		
-		Runner.runInSession(() -> {
-			Collection<Item> items = this.service.getItemsPersonajesDebiles(5);
-			Assert.assertEquals(1, items.size());
-			Assert.assertEquals("Tunica", items.iterator().next().getNombre());
-			
-			return null;
-		});
-		
+		items = this.service.getItemsPersonajesDebiles(5);
+		Assert.assertEquals(1, items.size());
+		Assert.assertEquals("Tunica", items.iterator().next().getNombre());
+
 	}
 
 	@Test
 	public void test_get_mas_pesado() {
-		Runner.runInSession(() -> {
-			Item item = this.service.getHeaviestItem();
-			Assert.assertEquals("Tunica", item.getNombre());
-			
-			return null;
-		});
+		Item item = this.service.getHeaviestItem();
+		Assert.assertEquals("Tunica", item.getNombre());
 	}
 	
 }

@@ -3,11 +3,7 @@ package ar.edu.unq.unidad3.wop.modelo;
 import java.util.HashSet;
 import java.util.Set;
 
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.OneToMany;
+import javax.persistence.*;
 
 import ar.edu.unq.unidad3.wop.modelo.exception.MuchoPesoException;
 
@@ -24,7 +20,7 @@ public class Personaje {
 	private int xp;
 	private int vida;
 	
-	@OneToMany(mappedBy="owner", cascade=CascadeType.ALL)
+	@OneToMany(mappedBy="owner", cascade=CascadeType.ALL, fetch = FetchType.EAGER)
 	private Set<Item> inventario = new HashSet<>();
 	
 	protected Personaje() {
